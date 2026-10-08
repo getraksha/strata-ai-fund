@@ -1,0 +1,20 @@
+# Built binary (go build -o strata ./cmd/strata)
+/strata
+*.test
+*.out
+
+# Project folders created by `strata init` / `strata serve` (audit logs from local runs).
+# demo/ is kept on purpose: the TDD cites it.
+/.strata/
+**/events.jsonl
+!/demo/events.jsonl
+
+# Secrets
+.env
+.env.*
+
+# OS / editor / app files
+.DS_Store
+.idea/
+.vscode/
+Claude outputs/

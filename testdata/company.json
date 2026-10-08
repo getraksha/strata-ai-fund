@@ -1,0 +1,194 @@
+{
+  "company": {
+    "id": "SRE",
+    "name": "Sierra Ridge Electric Co. (fictional)",
+    "type": "investor-owned electric utility",
+    "customers": 120000,
+    "hftd_tiers_served": [2, 3],
+    "overhead_facilities": true
+  },
+
+  "tracked_dockets": [
+    {"docket": "R.26-04-017", "title": "Wildfire Mitigation and Vegetation Management Requirements", "last_reviewed_version": "v1_proposed.md"}
+  ],
+
+  "topics": [
+    {"id": "wmp",                   "keywords": ["wildfire mitigation plan", "WMP"]},
+    {"id": "vegetation",            "keywords": ["vegetation", "clearance", "hazard tree", "tree"]},
+    {"id": "psps",                  "keywords": ["de-energiz", "Public Safety Power Shutoff", "PSPS"]},
+    {"id": "customer-notification", "keywords": ["notify", "notification", "contact attempts", "medical baseline"]},
+    {"id": "reporting",             "keywords": ["report", "file", "filed"]},
+    {"id": "compliance",            "keywords": ["compliance officer", "audit", "auditor", "penalt"]},
+    {"id": "applicability",         "keywords": ["apply to", "customers within the State", "effective"]}
+  ],
+
+  "people": [
+    {"id": "P-01", "name": "Dana Ortiz",    "role": "Regulatory Affairs Manager",       "topics": ["wmp", "reporting", "applicability"]},
+    {"id": "P-02", "name": "Raj Patel",     "role": "Vegetation Management Lead",       "topics": ["vegetation"]},
+    {"id": "P-03", "name": "Lena Brooks",   "role": "PSPS & Emergency Operations Mgr",  "topics": ["psps", "customer-notification"]},
+    {"id": "P-04", "name": "Sam Whitfield", "role": "Regulatory Counsel",               "topics": ["legal", "interpretation"]},
+    {"id": "P-05", "name": "Priya Nair",    "role": "Compliance Officer",               "topics": ["compliance"]}
+  ],
+
+  "routing": {
+    "default_reviewer": "P-01",
+    "escalation_reviewer": "P-04",
+    "rules": [
+      "direct obligation hit -> obligation owner",
+      "topic match or gap (no linked obligation) -> person covering the topic",
+      "low confidence or ambiguous wording -> escalation_reviewer"
+    ]
+  },
+
+  "obligations": [
+    {
+      "id": "OB-01",
+      "title": "File initial Wildfire Mitigation Plan",
+      "requirement": "File initial WMP within 90 days of the decision's effective date.",
+      "sources": [{"docket": "R.26-04-017", "clause": "3.3", "as_of": "v1_proposed.md"}],
+      "deadline_rule": "effective_date + 90d",
+      "status": "anticipated",
+      "owner": "P-01",
+      "topics": ["wmp", "reporting"],
+      "project_ids": ["PRJ-01"],
+      "document_ids": ["DOC-01", "DOC-03"]
+    },
+    {
+      "id": "OB-02",
+      "title": "WMP scope and contents",
+      "requirement": "WMP covers three years and describes inspections, vegetation management, system hardening and situational awareness.",
+      "sources": [
+        {"docket": "R.26-04-017", "clause": "3.1", "as_of": "v1_proposed.md"},
+        {"docket": "R.26-04-017", "clause": "3.2", "as_of": "v1_proposed.md"}
+      ],
+      "status": "anticipated",
+      "owner": "P-01",
+      "topics": ["wmp"],
+      "project_ids": ["PRJ-01"],
+      "document_ids": ["DOC-01"]
+    },
+    {
+      "id": "OB-03",
+      "title": "Maintain vegetation clearance",
+      "requirement": "Maintain 4 ft minimum radial clearance around covered facilities.",
+      "sources": [{"docket": "R.26-04-017", "clause": "4.1", "as_of": "v1_proposed.md"}],
+      "status": "anticipated",
+      "owner": "P-02",
+      "topics": ["vegetation"],
+      "project_ids": ["PRJ-02"],
+      "document_ids": ["DOC-02"]
+    },
+    {
+      "id": "OB-04",
+      "title": "Vegetation inspection reporting",
+      "requirement": "File vegetation inspection report with the Commission annually.",
+      "sources": [{"docket": "R.26-04-017", "clause": "4.2", "as_of": "v1_proposed.md"}],
+      "frequency": "annual",
+      "status": "anticipated",
+      "owner": "P-02",
+      "topics": ["vegetation", "reporting"],
+      "project_ids": [],
+      "document_ids": ["DOC-03"]
+    },
+    {
+      "id": "OB-05",
+      "title": "Hazard tree removal",
+      "requirement": "Remove or mitigate hazard trees within 180 days (recommended practice, not mandatory).",
+      "sources": [{"docket": "R.26-04-017", "clause": "4.3", "as_of": "v1_proposed.md"}],
+      "mandatory": false,
+      "status": "anticipated",
+      "owner": "P-02",
+      "topics": ["vegetation"],
+      "project_ids": ["PRJ-03"],
+      "document_ids": ["DOC-02"]
+    },
+    {
+      "id": "OB-06",
+      "title": "PSPS customer notification",
+      "requirement": "Notify affected customers as soon as practicable before de-energization.",
+      "sources": [{"docket": "R.26-04-017", "clause": "5.1", "as_of": "v1_proposed.md"}],
+      "status": "anticipated",
+      "owner": "P-03",
+      "topics": ["psps", "customer-notification"],
+      "project_ids": [],
+      "document_ids": ["DOC-04"]
+    },
+    {
+      "id": "OB-07",
+      "title": "PSPS post-event report",
+      "requirement": "File post-event report within 10 business days of each de-energization.",
+      "sources": [{"docket": "R.26-04-017", "clause": "5.2", "as_of": "v1_proposed.md"}],
+      "status": "anticipated",
+      "owner": "P-03",
+      "topics": ["psps", "reporting"],
+      "project_ids": [],
+      "document_ids": ["DOC-03", "DOC-04"]
+    },
+    {
+      "id": "OB-08",
+      "title": "Designate compliance officer",
+      "requirement": "Designate a compliance officer responsible for implementing the decision.",
+      "sources": [{"docket": "R.26-04-017", "clause": "6.1", "as_of": "v1_proposed.md"}],
+      "status": "anticipated",
+      "owner": "P-05",
+      "topics": ["compliance"],
+      "project_ids": [],
+      "document_ids": ["DOC-05"]
+    },
+    {
+      "id": "OB-09",
+      "title": "Biennial independent WMP audit",
+      "requirement": "Retain an independent auditor to review WMP implementation every two years.",
+      "sources": [{"docket": "R.26-04-017", "clause": "6.2", "as_of": "v1_proposed.md"}],
+      "frequency": "biennial",
+      "status": "anticipated",
+      "owner": "P-05",
+      "topics": ["compliance", "wmp"],
+      "project_ids": ["PRJ-04"],
+      "document_ids": ["DOC-05"]
+    }
+  ],
+
+  "projects": [
+    {
+      "id": "PRJ-01",
+      "name": "2027-2029 WMP Preparation",
+      "owner": "P-01",
+      "due": "2026-12-15",
+      "obligation_ids": ["OB-01", "OB-02"],
+      "assumptions": ["Filing window is 90 days after the effective date"]
+    },
+    {
+      "id": "PRJ-02",
+      "name": "Vegetation Clearance Program 2027",
+      "owner": "P-02",
+      "due": "2027-06-30",
+      "obligation_ids": ["OB-03"],
+      "assumptions": ["4 ft clearance applies uniformly in Tier 2 and Tier 3", "Crew budget sized for 4 ft clearance"]
+    },
+    {
+      "id": "PRJ-03",
+      "name": "Hazard Tree Backlog Reduction",
+      "owner": "P-02",
+      "due": "2027-03-31",
+      "obligation_ids": ["OB-05"],
+      "assumptions": ["Removal is discretionary", "Backlog target is 270 days per tree"]
+    },
+    {
+      "id": "PRJ-04",
+      "name": "Independent WMP Auditor Procurement",
+      "owner": "P-05",
+      "due": "2027-02-01",
+      "obligation_ids": ["OB-09"],
+      "assumptions": ["Audit is required every two years"]
+    }
+  ],
+
+  "documents": [
+    {"id": "DOC-01", "title": "WMP Filing Procedure",                 "type": "procedure", "owner": "P-01", "obligation_ids": ["OB-01", "OB-02"]},
+    {"id": "DOC-02", "title": "Vegetation Management Standard VM-100", "type": "standard",  "owner": "P-02", "obligation_ids": ["OB-03", "OB-05"]},
+    {"id": "DOC-03", "title": "Regulatory Reporting Calendar",         "type": "calendar",  "owner": "P-01", "obligation_ids": ["OB-01", "OB-04", "OB-07"]},
+    {"id": "DOC-04", "title": "PSPS Customer Notification Playbook",   "type": "procedure", "owner": "P-03", "obligation_ids": ["OB-06", "OB-07"]},
+    {"id": "DOC-05", "title": "Compliance Program Charter",            "type": "policy",    "owner": "P-05", "obligation_ids": ["OB-08", "OB-09"]}
+  ]
+}

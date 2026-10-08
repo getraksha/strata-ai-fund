@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strata</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5f6b78; --line: #dde2e8;
+  --accent: #2457c5; --accent-ink: #ffffff;
+  --ok: #1f7a4a; --ok-bg: #e6f4ec; --warn: #9a5b00; --warn-bg: #fff3dc;
+  --bad: #b3261e; --bad-bg: #fdecea; --info-bg: #eaf0fb;
+  --del: #b3261e; --del-bg: #fdecea; --ins: #1f7a4a; --ins-bg: #e6f4ec;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111418; --panel: #1a1f25; --ink: #e6e9ed; --muted: #9aa5b1; --line: #2c333b;
+    --accent: #6f9cff; --accent-ink: #0d1117;
+    --ok: #6fd39b; --ok-bg: #16301f; --warn: #f0b55a; --warn-bg: #33270f;
+    --bad: #ff8a80; --bad-bg: #3a1714; --info-bg: #1b2738;
+    --del: #ff8a80; --del-bg: #3a1714; --ins: #6fd39b; --ins-bg: #16301f;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; }
+header { background: var(--panel); border-bottom: 1px solid var(--line); padding: 12px 20px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+header h1 { font-size: 17px; margin: 0; }
+header .sub { color: var(--muted); }
+header .spacer { flex: 1; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px 20px 60px; }
+select, input, button, textarea { font: inherit; color: inherit; }
+select, input[type=text] { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
+button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.approve { border-color: var(--ok); color: var(--ok); }
+button.reject { border-color: var(--bad); color: var(--bad); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); font-size: 12.5px; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid transparent; white-space: nowrap; }
+.b-draft { background: var(--info-bg); color: var(--accent); }
+.b-final { background: var(--ok-bg); color: var(--ok); }
+.b-pending { background: var(--info-bg); color: var(--accent); }
+.b-needs_expert { background: var(--warn-bg); color: var(--warn); }
+.b-approved { background: var(--ok-bg); color: var(--ok); }
+.b-rejected { background: var(--bad-bg); color: var(--bad); }
+.b-effective { background: var(--ok-bg); color: var(--ok); }
+.b-anticipated { background: var(--info-bg); color: var(--accent); }
+.b-plain { border-color: var(--line); color: var(--muted); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 6px 0 14px; }
+.tabs button { border: none; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 8px 12px; color: var(--muted); }
+.tabs button.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+.versions { display: flex; flex-wrap: wrap; gap: 10px; }
+.version { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 220px; flex: 1; }
+.version .q { margin-top: 4px; font-size: 12.5px; color: var(--muted); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.card.needs_expert { border-color: var(--warn); }
+.card-head { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; border-bottom: 1px solid var(--line); }
+.card-head .id { font-weight: 700; }
+.card-body { padding: 10px 14px; display: grid; gap: 10px; }
+.meaning { font-size: 15px; }
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 3px; }
+.edit { font-family: var(--mono); font-size: 12.5px; margin: 2px 0; }
+.edit del { background: var(--del-bg); color: var(--del); text-decoration: line-through; padding: 0 3px; border-radius: 3px; }
+.edit ins { background: var(--ins-bg); color: var(--ins); text-decoration: none; padding: 0 3px; border-radius: 3px; }
+.cite { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+.quote { border-left: 3px solid var(--accent); padding: 2px 8px; margin: 3px 0; }
+.escalate { background: var(--warn-bg); color: var(--warn); border-radius: 6px; padding: 6px 10px; }
+ul.flat { list-style: none; margin: 0; padding: 0; }
+ul.flat li { padding: 2px 0; }
+.how { font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); margin-right: 4px; }
+.decide { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--bg); }
+.decide input { flex: 1; min-width: 180px; }
+td.keep { white-space: nowrap; }
+details summary { cursor: pointer; color: var(--muted); }
+pre.clause { white-space: pre-wrap; font-family: var(--mono); font-size: 12px; background: var(--bg); padding: 8px; border-radius: 6px; margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; }
+tr.undone td { color: var(--muted); text-decoration: line-through; }
+tr.undone td.keep { text-decoration: none; }
+#toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); max-width: 90vw; padding: 10px 14px; border-radius: 8px; display: none; z-index: 10; }
+#toast.err { display: block; background: var(--bad-bg); color: var(--bad); border: 1px solid var(--bad); }
+#toast.ok { display: block; background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.filters button { padding: 3px 10px; }
+.filters button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+@media (max-width: 640px) { main { padding: 12px; } header { padding: 10px 12px; } .version { min-width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Strata · change-to-action</h1>
+    <div class="sub" id="company"></div>
+  </div>
+  <div class="spacer"></div>
+  <label class="row">Acting as <select id="actor"></select></label>
+</header>
+<main>
+  <section class="panel">
+    <div class="row" style="justify-content: space-between">
+      <div class="label" style="margin:0">Proceeding versions</div>
+      <div class="row" id="ingest"></div>
+    </div>
+    <div class="versions" id="versions" style="margin-top:8px"></div>
+  </section>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="changes" class="on">Changes</button>
+    <button data-tab="obligations">Obligations &amp; tasks</button>
+    <button data-tab="audit">Audit log</button>
+  </nav>
+  <section id="view"></section>
+</main>
+<div id="toast"></div>
+
+<script>
+"use strict";
+let S = null;
+let tab = "changes";
+let filter = "open";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const flat = (s) => String(s ?? "").split(/\s+/).join(" ").trim();
+const cite = (c) => c ? `${c.doc} §${c.clause_id} L${c.line_start}${c.line_end !== c.line_start ? "-" + c.line_end : ""}` : "";
+const person = (id) => (S.people.find((p) => p.id === id) || { name: id || "system" }).name;
+const yn = (b) => (b ? "yes" : "no");
+
+function toast(msg, kind) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = kind;
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => (t.className = ""), kind === "err" ? 7000 : 2500);
+}
+
+async function api(path, body) {
+  const opt = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};
+  const r = await fetch(path, opt);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+async function load() {
+  try { S = await api("/api/state"); render(); }
+  catch (e) { toast(e.message, "err"); }
+}
+
+function actor() { return $("#actor").value; }
+
+// ---- routing rules, mirrored from the server so buttons explain themselves.
+// The server enforces them regardless.
+function canDecide(c) {
+  if (c.status === "approved" || c.status === "rejected") return [false, `Already ${c.status}`];
+  const me = actor();
+  const routed = (c.result.reviewers || []).map((r) => r.person_id);
+  if (c.status === "needs_expert") {
+    return me === S.escalation_reviewer ? [true, ""] : [false, `Needs expert review: only ${person(S.escalation_reviewer)} can decide`];
+  }
+  if (me === S.escalation_reviewer || routed.includes(me)) return [true, ""];
+  return [false, `Routed to ${routed.map(person).join(", ")}`];
+}
+
+// ---- render ----
+
+function render() {
+  const c = S.company;
+  $("#company").textContent = `${c.name} · ${c.customers.toLocaleString()} customers · HFTD tiers ${c.hftd_tiers_served.join(", ")} · as of event #${S.as_of}`;
+
+  const sel = $("#actor");
+  const prev = sel.value || safeGet("actor") || S.default_reviewer;
+  sel.innerHTML = S.people.map((p) => `<option value="${esc(p.id)}">${esc(p.name)} (${esc(p.role)})</option>`).join("");
+  sel.value = S.people.some((p) => p.id === prev) ? prev : S.default_reviewer;
+
+  $("#versions").innerHTML = S.versions.length
+    ? S.versions.map(versionHTML).join("")
+    : `<div class="muted">No versions yet. Ingest the first version of the proceeding to start.</div>`;
+
+  const ing = $("#ingest");
+  if (!S.model) {
+    ing.innerHTML = `<span class="muted">Ingest disabled: ${esc(S.model_error)}</span>`;
+  } else if (!S.available.length) {
+    ing.innerHTML = `<span class="muted">All versions in the docs folder are ingested · model ${esc(S.model)}</span>`;
+  } else {
+    ing.innerHTML = `<select id="file">${S.available.map((f) => `<option>${esc(f)}</option>`).join("")}</select>
+      <button class="primary" id="ingestBtn">Ingest next version</button>
+      <span class="muted">${esc(S.model)}</span>`;
+    $("#ingestBtn").onclick = ingest;
+  }
+
+  document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
+  const v = $("#view");
+  if (tab === "changes") v.innerHTML = changesHTML();
+  if (tab === "obligations") v.innerHTML = obligationsHTML();
+  if (tab === "audit") v.innerHTML = auditHTML();
+  wire();
+}
+
+function versionHTML(v) {
+  const st = v.status || {};
+  const ev = st.evidence ? `<div class="q">“${esc(flat(st.evidence.quote))}” <span class="cite">${esc(cite(st.evidence))}</span></div>` : "";
+  const esc8 = st.escalate ? `<div class="escalate" style="margin-top:4px">status escalated: ${esc((st.escalation_reasons || []).join("; "))}</div>` : "";
+  const eff = (v.obligation_effects || []).length ? `<div class="q">${v.obligation_effects.length} obligations became effective</div>` : "";
+  return `<div class="version"><div class="row"><b>${esc(v.doc)}</b>
+    <span class="badge b-${esc(st.status)}">${esc((st.status || "").toUpperCase())}</span>
+    <span class="muted">issued ${esc(v.issued)}</span></div>${ev}${eff}${esc8}</div>`;
+}
+
+function changesHTML() {
+  if (!S.cards.length) return `<div class="panel muted">No changes yet. Ingest at least two versions.</div>`;
+  const counts = {};
+  S.cards.forEach((c) => (counts[c.status] = (counts[c.status] || 0) + 1));
+  const open = (counts.pending || 0) + (counts.needs_expert || 0);
+  const mine = S.cards.filter((c) => canDecide(c)[0]).length;
+  const f = [
+    ["open", `Open (${open})`], ["mine", `My queue (${mine})`], ["needs_expert", `Needs expert (${counts.needs_expert || 0})`],
+    ["decided", `Decided (${(counts.approved || 0) + (counts.rejected || 0)})`], ["all", `All (${S.cards.length})`],
+  ];
+  const keep = (c) => filter === "all" ? true
+    : filter === "open" ? (c.status === "pending" || c.status === "needs_expert")
+    : filter === "mine" ? canDecide(c)[0]
+    : filter === "decided" ? (c.status === "approved" || c.status === "rejected")
+    : c.status === filter;
+  const list = S.cards.filter(keep);
+  return `<div class="row filters" style="margin-bottom:12px">${f.map(([k, l]) => `<button data-filter="${k}" class="${filter === k ? "on" : ""}">${esc(l)}</button>`).join("")}</div>`
+    + (list.length ? list.map(cardHTML).join("") : `<div class="panel muted">Nothing here.</div>`);
+}
+
+function cardHTML(c) {
+  const r = c.result, ch = r.impact.change;
+  const edits = (ch.edits || []).map((e) =>
+    `<div class="edit">${e.old ? `<del>${esc(flat(e.old.quote))}</del> ` : ""}${e.new ? `<ins>${esc(flat(e.new.quote))}</ins>` : ""}
+     <span class="cite">${esc(cite(e.new || e.old))}</span></div>`).join("");
+  const whole = ch.type === "added" ? `<div class="edit"><ins>${esc(flat(ch.new.quote))}</ins></div>`
+    : ch.type === "deleted" ? `<div class="edit"><del>${esc(flat(ch.old.quote))}</del></div>`
+    : ch.type === "renumbered" ? `<div class="muted">Text unchanged; moved from §${esc(ch.old_id)} to §${esc(ch.new_id)}.</div>` : "";
+  const evidence = (r.evidence || []).map((q) => `<div class="quote">“${esc(flat(q.quote))}” <span class="cite">${esc(cite(q))}</span></div>`).join("");
+  const hits = (r.impact.hits || []).map((h) =>
+    `<li><span class="how">${esc(h.how.replace("_", " "))}</span><b>${esc(h.id)}</b> ${esc(h.title)} <span class="muted">· ${esc(h.via)}${h.owner ? " · " + esc(person(h.owner)) : ""}</span></li>`).join("");
+  const actions = (r.actions || []).map((a) => `<li><b>${esc(a.item_id)}</b> ${esc(a.action)}</li>`).join("");
+  const reasons = (r.escalation_reasons || []).map((x) => `<div>⚠ ${esc(x)}</div>`).join("");
+  const reviewers = (r.reviewers || []).map((rv) => `<li><b>${esc(rv.name)}</b> <span class="muted">${esc(rv.role)} · ${esc((rv.reasons || []).join("; "))}</span></li>`).join("");
+  const decisions = (c.decisions || []).map((d) => `<li>#${d.seq} <b>${esc(d.decision)}</b> by ${esc(person(d.reviewer))} ${d.note ? "· " + esc(d.note) : ""}</li>`).join("");
+  const [ok, why] = canDecide(c);
+  const clauseText = (ch.old ? `<div class="label">Old ${esc(cite(ch.old))}</div><pre class="clause">${esc(ch.old.quote)}</pre>` : "")
+    + (ch.new ? `<div class="label">New ${esc(cite(ch.new))}</div><pre class="clause">${esc(ch.new.quote)}</pre>` : "");
+
+  return `<article class="card ${esc(c.status)}">
+    <div class="card-head">
+      <span class="id">${esc(c.id)}</span>
+      <span class="badge b-${esc(c.status)}">${esc(c.status.replace("_", " "))}</span>
+      <b>${esc(ch.type.toUpperCase())} ${esc(c.section)}</b>
+      <span class="badge b-plain">${esc(r.direction)}</span>
+      <span class="muted">rule change: ${yn(r.rule_change_material)} · company action: ${yn(r.company_action_required)} · confidence ${Number(r.confidence).toFixed(2)} · by ${esc(r.decided_by)}</span>
+      <span class="spacer" style="flex:1"></span>
+      <span class="muted">${esc(c.transition)}</span>
+    </div>
+    <div class="card-body">
+      ${r.summary ? `<div class="meaning">${esc(r.summary)}</div>` : ""}
+      ${reasons ? `<div class="escalate">${reasons}</div>` : ""}
+      <div><div class="label">What changed</div>${edits || whole}</div>
+      ${evidence ? `<div><div class="label">Evidence (verified against source)</div>${evidence}</div>` : ""}
+      ${hits ? `<div><div class="label">Affected at ${esc(S.company.name)}</div><ul class="flat">${hits}</ul></div>` : `<div class="muted">${esc(r.impact.note || "No company items affected.")}</div>`}
+      ${actions ? `<div><div class="label">Recommended actions</div><ul class="flat">${actions}</ul></div>` : ""}
+      <div><div class="label">Routed to</div><ul class="flat">${reviewers}</ul></div>
+      ${decisions ? `<div><div class="label">Decisions</div><ul class="flat">${decisions}</ul></div>` : ""}
+      <details><summary>Full clause text and model rationale</summary>${clauseText}
+        ${r.rationale ? `<div class="label">Rationale</div><div>${esc(r.rationale)}</div>` : ""}</details>
+    </div>
+    ${c.status === "pending" || c.status === "needs_expert" ? `<div class="decide">
+      <input type="text" id="note-${esc(c.id)}" placeholder="Note (required to reject)" ${ok ? "" : "disabled"}>
+      <button class="approve" data-decide="approve" data-card="${esc(c.id)}" ${ok ? "" : "disabled"}>Approve</button>
+      <button class="reject" data-decide="reject" data-card="${esc(c.id)}" ${ok ? "" : "disabled"}>Reject</button>
+      ${ok ? "" : `<span class="muted">${esc(why)}</span>`}
+    </div>` : ""}
+  </article>`;
+}
+
+function obligationsHTML() {
+  const rows = S.obligations.map((o) => `<tr>
+    <td><b>${esc(o.id)}</b></td>
+    <td>${esc(o.title)}<div class="muted">${esc(o.requirement)}</div></td>
+    <td>${esc(person(o.owner))}</td>
+    <td><span class="badge b-${esc(o.status)}">${esc(o.status)}</span>${o.effective_date ? `<div class="muted">since ${esc(o.effective_date)}</div>` : ""}</td>
+    <td>${o.due ? `<b>${esc(o.due)}</b><div class="cite">“${esc(flat(o.due_evidence.quote))}” ${esc(cite(o.due_evidence))}</div>` : `<span class="muted">—</span>`}</td>
+  </tr>`).join("");
+  const tasks = S.tasks.length ? S.tasks.map((t) => `<tr><td>${esc(person(t.owner))}</td><td><b>${esc(t.item_id)}</b></td><td>${esc(t.action)}</td><td>${esc(t.card_id)} · #${t.seq}</td></tr>`).join("")
+    : `<tr><td colspan="4" class="muted">No tasks yet. Approving a card turns its actions into tasks.</td></tr>`;
+  return `<div class="panel"><div class="label">Obligations</div>
+    <table><tr><th>ID</th><th>Obligation</th><th>Owner</th><th>Status</th><th>Due</th></tr>${rows}</table></div>
+    <div class="panel"><div class="label">Tasks from approved cards</div>
+    <table><tr><th>Owner</th><th>Item</th><th>Action</th><th>From</th></tr>${tasks}</table></div>`;
+}
+
+function auditHTML() {
+  const last = S.events.length ? S.events[S.events.length - 1] : null;
+  const rows = S.events.slice().reverse().map((e) => {
+    const can = !e.undone_by && e.seq < S.as_of;
+    return `<tr class="${e.undone_by ? "undone" : ""}">
+      <td class="keep">#${e.seq}</td>
+      <td>${esc(new Date(e.time).toLocaleString())}</td>
+      <td>${esc(e.actor === "system" ? "system" : person(e.actor))}</td>
+      <td class="mono">${esc(e.summary)}${e.undone_by ? ` <span class="badge b-plain">undone by #${e.undone_by}</span>` : ""}</td>
+      <td class="mono muted">${esc(e.hash)}</td>
+      <td class="keep">${can ? `<button data-rollback="${e.seq}" style="white-space:nowrap">Roll back here</button>` : ""}</td>
+    </tr>`;
+  }).join("");
+  return `<div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <div><b>${S.events.length} events</b> · hash chain verified on every request${last ? ` · head <span class="mono">${esc(last.hash)}</span>` : ""}</div>
+      <input type="text" id="rbnote" placeholder="Reason for rollback (required)" style="min-width:260px">
+    </div>
+    <p class="muted" style="margin:6px 0 10px">Append-only: a rollback is a new event. Undone events stay in the log, struck through.</p>
+    <table><tr><th>#</th><th>Time</th><th>Actor</th><th>Event</th><th>Hash</th><th></th></tr>${rows}</table>
+  </div>`;
+}
+
+// ---- actions ----
+
+function wire() {
+  document.querySelectorAll("[data-filter]").forEach((b) => (b.onclick = () => { filter = b.dataset.filter; render(); }));
+  document.querySelectorAll("[data-decide]").forEach((b) => (b.onclick = () => decide(b.dataset.card, b.dataset.decide)));
+  document.querySelectorAll("[data-rollback]").forEach((b) => (b.onclick = () => rollback(Number(b.dataset.rollback))));
+}
+
+async function decide(card, decision) {
+  const note = ($(`#note-${card}`) || {}).value || "";
+  try {
+    S = await api("/api/review", { card, reviewer: actor(), decision, note });
+    toast(`${card} ${decision === "approve" ? "approved" : "rejected"}`, "ok");
+    render();
+  } catch (e) { toast(e.message, "err"); }
+}
+
+async function rollback(to) {
+  const note = $("#rbnote").value;
+  try {
+    S = await api("/api/rollback", { to, actor: actor(), note });
+    toast(`Rolled back to #${to}`, "ok");
+    render();
+  } catch (e) { toast(e.message, "err"); }
+}
+
+async function ingest() {
+  const file = $("#file").value, btn = $("#ingestBtn");
+  btn.disabled = true;
+  btn.textContent = "Assessing with the model…";
+  try {
+    S = await api("/api/ingest", { file });
+    toast(`${file} ingested`, "ok");
+    tab = "changes"; filter = "open";
+    render();
+  } catch (e) {
+    toast(e.message, "err");
+    btn.disabled = false;
+    btn.textContent = "Ingest next version";
+  }
+}
+
+function safeGet(k) { try { return localStorage.getItem(k); } catch { return null; } }
+function safeSet(k, v) { try { localStorage.setItem(k, v); } catch { /* ignore */ } }
+
+$("#actor").onchange = () => { safeSet("actor", actor()); render(); };
+document.querySelectorAll("#tabs button").forEach((b) => (b.onclick = () => { tab = b.dataset.tab; render(); }));
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "docket": "R.26-04-017",
+  "fields": {
+    "material": "rule_change_material: the rule's substance changed (for any regulated company)",
+    "action":   "company_action_required: Sierra Ridge Electric must change an obligation, project, document or process",
+    "escalate": "must go to expert review instead of being decided automatically"
+  },
+  "versions": [
+    {"file": "v1_proposed.md", "status": "draft", "evidence": "heading: PROPOSED DECISION; 7.1 'If adopted ... would become effective'"},
+    {"file": "v2_revised.md",  "status": "draft", "evidence": "heading: REVISED PROPOSED DECISION; preamble 'issued for further public comment'"},
+    {"file": "v3_final.md",    "status": "final", "evidence": "heading: DECISION ADOPTING; 7.1 'This decision is effective today.'",
+     "trap": "preamble still contains the words 'revised proposed decision' - naive keyword match will misclassify as draft"}
+  ],
+  "transitions": [
+    {
+      "from": "v1_proposed.md",
+      "to": "v2_revised.md",
+      "changes": [
+        {"section_old": "2.3", "section_new": "2.4", "type": "renumbered", "material": false, "action": false, "escalate": false, "note": "Covered Facility shifted by new 2.3; text identical"},
+        {"section_old": null,  "section_new": "2.3", "type": "added",      "material": false, "action": false, "escalate": false, "note": "New PSPS definition; names a term, creates no duty"},
+        {"section_old": "3.3", "section_new": "3.3", "type": "modified",   "material": true,  "action": true,  "escalate": false, "note": "WMP filing deadline 90 -> 60 days"},
+        {"section_old": "4.2", "section_new": "4.2", "type": "modified",   "material": true,  "action": true,  "escalate": false, "note": "Inspection reporting annually -> quarterly"},
+        {"section_old": "4.3", "section_new": "4.3", "type": "modified",   "material": true,  "action": true,  "escalate": false, "note": "Modal shift should -> shall (recommendation becomes mandatory)"},
+        {"section_old": null,  "section_new": "5.3", "type": "added",      "material": true,  "action": true,  "escalate": false, "note": "New medical baseline 48-hour notice requirement"},
+        {"section_old": "6.2", "section_new": null,  "type": "deleted",    "material": true,  "action": true,  "escalate": false, "note": "Independent audit requirement removed; retire OB-09, reassess PRJ-04"},
+        {"section_old": "6.3", "section_new": "6.3", "type": "modified",   "material": false, "action": false, "escalate": false, "note": "Cosmetic rewording ('under' -> 'as provided under'); no change in meaning"}
+      ]
+    },
+    {
+      "from": "v2_revised.md",
+      "to": "v3_final.md",
+      "changes": [
+        {"section_old": "1.2", "section_new": "1.2", "type": "modified",  "material": true,  "action": false, "escalate": false, "note": "Applicability 100,000 -> 50,000 customers; scope expands but Sierra Ridge (120,000) was already covered"},
+        {"section_old": "3.2", "section_new": "3.2", "type": "unchanged", "material": false, "action": false, "escalate": false, "note": "Line reflow only; whitespace-normalized text identical. Diff should report NO change."},
+        {"section_old": "4.1", "section_new": "4.1", "type": "modified",  "material": true,  "action": true,  "escalate": false, "note": "Clearance 4 ft flat -> 4 ft Tier 2 / 12 ft Tier 3"},
+        {"section_old": "5.1", "section_new": "5.1", "type": "modified",  "material": true,  "action": true,  "escalate": true,  "note": "'as soon as practicable' -> 'within a reasonable time': unclear if stricter or looser; must escalate, not guess"},
+        {"section_old": "7.1", "section_new": "7.1", "type": "modified",  "material": true,  "action": true,  "escalate": false, "note": "Conditional effective date -> effective today; obligations become effective and deadlines start"}
+      ]
+    }
+  ]
+}

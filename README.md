@@ -5,7 +5,9 @@ proceeding, detects and cites every change, tells draft from final, maps changes
 obligations, projects and documents, recommends actions with reviewer routing, escalates ambiguous
 language to counsel, and keeps an append-only, tamper-evident project history with rollback.
 
-Docs: [PRD](docs/PRD.md) · [TDD](docs/TDD.md)
+Docs: [PRD](docs/PRD.md) · [TDD](docs/TDD.md) · [UI screenshots](ui-screenshots/README.md)
+
+![Change card: should → shall](ui-screenshots/02-card-should-to-shall.png)
 
 Go 1.21+, standard library only. Test data: a fictional docket (`testdata/v1_proposed.md` → `v2_revised.md` → `v3_final.md`),
 a fictional utility (`testdata/company.json`) and an expert answer key (`testdata/expected_changes.json`).
@@ -101,6 +103,7 @@ Stateless commands that run one stage at a time, for inspection and measurement:
 | `internal/workflow` | Ingest / review / rollback rules on top of the log |
 | `cmd/strata` | CLI and web UI (`serve`, page in `cmd/strata/web/`) |
 | `demo/` | Audit log of a real UI session (cited in the TDD) |
+| `ui-screenshots/` | Captioned screenshots of the UI from that session |
 
 ## Input format
 
